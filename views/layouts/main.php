@@ -39,6 +39,7 @@ AppAsset::register($this);
         'options' => ['class' => 'navbar-nav navbar-right'],
         'items' => [
             ['label' => 'Home', 'url' => ['/site/index']],
+            ['label' => 'Buisness', 'url' => ['/business-trip']],
             ['label' => 'Admin', 'url' => ['/admin']],
             ['label' => 'About', 'url' => ['/site/about']],
             ['label' => 'Регистрация', 'url' => ['/site/signup']],
