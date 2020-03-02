@@ -4,6 +4,7 @@ namespace app\models;
 
 use Yii;
 use yii\behaviors\BlameableBehavior;
+use yii\behaviors\TimestampBehavior;
 
 /**
  * This is the model class for table "business_trip".
@@ -60,6 +61,12 @@ class BusinessTrip extends \yii\db\ActiveRecord
         return [
             [
                 'class' => BlameableBehavior::className(),
+            ],
+            [
+                'class' => TimestampBehavior::className(),
+                'createdAtAttribute' => 'created_at',
+                'updatedAtAttribute' => 'updated_at',
+                'value' => function(){ return date('Y-m-d');},
             ],
         ];
     }
