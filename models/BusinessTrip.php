@@ -66,7 +66,7 @@ class BusinessTrip extends \yii\db\ActiveRecord
                 'class' => TimestampBehavior::className(),
                 'createdAtAttribute' => 'created_at',
                 'updatedAtAttribute' => 'updated_at',
-                'value' => function(){ return date('Y-m-d');},
+                'value' => function(){ return date('Y-m-d H:i:s');},
             ],
         ];
     }
