@@ -8,6 +8,7 @@ use app\models\BusinessTripSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\web\ForbiddenHttpException;
 
 use app\models\BuisnessMultiple;
 use yii\web\Response;
@@ -19,6 +20,7 @@ use yii\helpers\ArrayHelper;
  */
 class BusinessTripController extends Controller
 {
+    public $layout = 'admin';
     /**
      * {@inheritdoc}
      */
@@ -46,6 +48,30 @@ class BusinessTripController extends Controller
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
+        ]);
+    }
+
+    /**
+     * First page.
+     * @return mixed
+     */
+    public function actionDefault()
+    {
+        $userRole = 'админа';
+        if(Yii::$app->user->can('supervisor')){
+            $userRole = 'руководителя';
+        }
+        if(Yii::$app->user->can('master')){
+            $userRole = 'мастера';
+        }
+        if(Yii::$app->user->can('director')){
+            $userRole = 'директора';
+        }
+        
+
+        return $this->render('default', [
+            'userRole' => $userRole,
+            
         ]);
     }
 
@@ -114,7 +140,8 @@ class BusinessTripController extends Controller
                     
                     if ($flag) {
                         $transaction->commit();
-                        return $this->redirect(['view', 'id' => $model->id]);
+                        return $this->redirect(['index']);
+                        // return $this->redirect(['view', 'id' => $model->id]);
                     }
                 } catch (Exception $e) {
                     $transaction->rollBack();
@@ -138,6 +165,12 @@ class BusinessTripController extends Controller
     {
         $model = $this->findModel($id);
 
+        if( !Yii::$app->user->can('supervisor')){
+            if( !Yii::$app->user->can('updateOwnPost', ['post'=>$model]) ){
+                throw new ForbiddenHttpException("Permission Denied", 1);
+            } 
+        }        
+
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
         }
@@ -156,7 +189,63 @@ class BusinessTripController extends Controller
      */
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
+        $model = $this->findModel($id);
+
+        if( !Yii::$app->user->can('supervisor')){
+            if( !Yii::$app->user->can('updateOwnPost', ['post'=>$model]) ){
+                throw new ForbiddenHttpException("Permission Denied", 1);
+            } 
+        }         
+
+        $model->delete();
+
+        return $this->redirect(['index']);
+    }
+
+    public function actionMatching($id)
+    {
+        $model = $this->findModel($id);
+
+        if( Yii::$app->user->can('master')){
+            if( !Yii::$app->user->can('updateOwnPost', ['post'=>$model]) ){
+                throw new ForbiddenHttpException("Permission Denied", 1);
+            } 
+        }         
+
+        $model->status = 2;
+        $model->save();
+
+        return $this->redirect(['index']);
+    }
+
+    public function actionAgreed($id)
+    {
+        $model = $this->findModel($id);
+
+        if( Yii::$app->user->can('master')){
+            if( !Yii::$app->user->can('updateOwnPost', ['post'=>$model]) ){
+                throw new ForbiddenHttpException("Permission Denied", 1);
+            } 
+        }         
+
+        $model->status = 3;
+        $model->save();
+
+        return $this->redirect(['index']);
+    }
+
+    public function actionDenied($id)
+    {
+        $model = $this->findModel($id);
+
+        if( Yii::$app->user->can('master')){
+            if( !Yii::$app->user->can('updateOwnPost', ['post'=>$model]) ){
+                throw new ForbiddenHttpException("Permission Denied", 1);
+            } 
+        }         
+
+        $model->status = 4;
+        $model->save();
 
         return $this->redirect(['index']);
     }

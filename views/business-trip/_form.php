@@ -36,18 +36,18 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'user_total')->textInput() ?>
 
-    <?= $form->field($model, 'status')->textInput() ?>
+    <?php // $form->field($model, 'status')->textInput() ?>
 
-    <?= $form->field($model, 'created_at')->textInput() ?>
+    <?php // $form->field($model, 'created_at')->textInput() ?>
 
-    <?= $form->field($model, 'updated_at')->textInput() ?>
+    <?php // $form->field($model, 'updated_at')->textInput() ?>
 
-    <?= $form->field($model, 'created_by')->textInput() ?>
+    <?php // $form->field($model, 'created_by')->textInput() ?>
 
-    <?= $form->field($model, 'updated_by')->textInput() ?>
+    <?php // $form->field($model, 'updated_by')->textInput() ?>
 
     <div class="form-group">
-        <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
+        <?= Html::submitButton('Сохранить', ['class' => 'btn btn-success']) ?>
     </div>
 
     <?php ActiveForm::end(); ?>

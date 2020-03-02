@@ -124,7 +124,7 @@ $this->registerJs($js);
                     <div class="item panel panel-default">
                         <!-- widgetBody -->
                         <div class="panel-heading">
-                            <h3 class="panel-title pull-left">Address</h3>
+                            <h3 class="panel-title pull-left">Запрос</h3>
                             <div class="pull-right">
                                 <button type="button" class="add-item btn btn-success btn-xs"><i class="glyphicon glyphicon-plus"></i></button>
                                 <button type="button" class="remove-item btn btn-danger btn-xs"><i class="glyphicon glyphicon-minus"></i></button>
@@ -274,7 +274,32 @@ $this->registerJs($js);
                                     <?= $form->field($model, "[{$i}]trip_target")->textInput(['maxlength' => true]) ?>
                                 </div>
                                 <div class="col-md-3">
-                                    <?= $form->field($model, "[{$i}]user_amount")->textInput(['maxlength' => true]) ?>
+                                    <?= $form->field($model, "[{$i}]user_amount")->textInput([
+                                        'maxlength' => true,
+                                        'onchange'=>"
+                                            let elementId = $(this).attr('id');
+                                            let formScope = elementId.substring(0, 14); 
+                                            let fieldName = elementId.substring(15);
+
+                                            let dateCountVal = $('input[id*=' + formScope + '-date_count' + ']').val();
+
+                                            function isEmpty(str) {
+                                                if (str.trim() == ''){
+                                                    return false;
+                                                }else{
+                                                    return true;
+                                                }                                                            
+                                              }
+
+                                            //если поле количество дней не пустое произвести вычесления
+                                            if(isEmpty(dateCountVal)){
+                                                let dayCountInt = parseInt(dateCountVal);
+                                                let amountVal = parseInt($(this).val());
+                                                let result = dayCountInt * amountVal;
+                                                $('input[id*=' + formScope + '-user_total' + ']').val(result);                                                
+                                            }                                                                                     
+                                        "
+                                        ]) ?>
                                 </div>
                                 <div class="col-md-3">
                                     <?= $form->field($model, "[{$i}]user_total")->textInput(['maxlength' => true]) ?>
@@ -289,7 +314,7 @@ $this->registerJs($js);
     </div>
 
     <div class="form-group">
-        <?= Html::submitButton($model->isNewRecord ? 'Create' : 'Update', ['class' => 'btn btn-primary']) ?>
+        <?= Html::submitButton($model->isNewRecord ? 'Создать' : 'Update', ['class' => 'btn btn-primary']) ?>
     </div>
 
     <?php ActiveForm::end(); ?>

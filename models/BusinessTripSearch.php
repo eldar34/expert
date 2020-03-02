@@ -2,6 +2,7 @@
 
 namespace app\models;
 
+use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 use app\models\BusinessTrip;
@@ -42,10 +43,18 @@ class BusinessTripSearch extends BusinessTrip
     {
         $query = BusinessTrip::find();
 
+        if( Yii::$app->user->can('master') ){
+            $this->created_by = Yii::$app->user->id;
+        }        
+
         // add conditions that should always apply here
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
+            'pagination' => [
+                // количество пунктов на странице
+                'pageSize' => 10,
+            ]
         ]);
 
         $this->load($params);
@@ -78,6 +87,10 @@ class BusinessTripSearch extends BusinessTrip
             ->andFilterWhere(['like', 'user_project', $this->user_project])
             ->andFilterWhere(['like', 'user_direction', $this->user_direction])
             ->andFilterWhere(['like', 'trip_target', $this->trip_target]);
+
+            if( Yii::$app->user->can('director') ){
+                $query->andFilterWhere(['in', 'status', [2, 3, 4]]);
+            } 
 
         return $dataProvider;
     }

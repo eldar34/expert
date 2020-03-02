@@ -10,20 +10,58 @@ $this->title = $model->id;
 $this->params['breadcrumbs'][] = ['label' => 'Business Trips', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
+
+$statusView = new app\models\BusinessTrip;
 ?>
 <div class="business-trip-view">
 
     <h1><?= Html::encode($this->title) ?></h1>
 
     <p>
-        <?= Html::a('Update', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
-        <?= Html::a('Delete', ['delete', 'id' => $model->id], [
-            'class' => 'btn btn-danger',
-            'data' => [
-                'confirm' => 'Are you sure you want to delete this item?',
-                'method' => 'post',
-            ],
-        ]) ?>
+
+    <?php if(Yii::$app->user->can('master')): ?>
+            <?= Html::a('Обновить', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
+            <?= Html::a('Удалить', ['delete', 'id' => $model->id], [
+                'class' => 'btn btn-danger',
+                'data' => [
+                    'confirm' => 'Are you sure you want to delete this item?',
+                    'method' => 'post',
+                ],
+            ]) ?>
+        <?php endif ?>
+
+        <?php if(Yii::$app->user->can('supervisor')): ?>
+            <?= Html::a('Обновить', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
+            <?= Html::a('Удалить', ['delete', 'id' => $model->id], [
+                'class' => 'btn btn-danger',
+                'data' => [
+                    'confirm' => 'Are you sure you want to delete this item?',
+                    'method' => 'post',
+                ],
+            ]) ?>
+            <?= Html::a('На соглосование', ['matching', 'id' => $model->id], [
+                'class' => 'btn btn-warning',
+                'data' => [                
+                    'method' => 'post',
+                ],
+            ]) ?>
+        <?php endif ?>
+
+        <?php if(Yii::$app->user->can('director')): ?>
+            <?= Html::a('Согласовано', ['agreed', 'id' => $model->id], [
+                'class' => 'btn btn-success',
+                'data' => [                
+                    'method' => 'post',
+                ],
+            ]) ?>
+            <?= Html::a('Отказано', ['denied', 'id' => $model->id], [
+                'class' => 'btn btn-danger',
+                'data' => [                
+                    'method' => 'post',
+                ],
+            ]) ?>
+        <?php endif ?>
+
     </p>
 
     <?= DetailView::widget([
@@ -42,11 +80,15 @@ $this->params['breadcrumbs'][] = $this->title;
             'trip_target',
             'user_amount',
             'user_total',
-            'status',
-            'created_at',
-            'updated_at',
-            'created_by',
-            'updated_by',
+            //'status',
+            [
+                'label'  => 'status',
+                'value'  => $statusView->recordStatus[$model->status]
+            ],
+            // 'created_at',
+            // 'updated_at',
+            // 'created_by',
+            // 'updated_by',
         ],
     ]) ?>
 

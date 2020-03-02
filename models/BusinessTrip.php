@@ -3,6 +3,7 @@
 namespace app\models;
 
 use Yii;
+use yii\behaviors\BlameableBehavior;
 
 /**
  * This is the model class for table "business_trip".
@@ -28,6 +29,12 @@ use Yii;
  */
 class BusinessTrip extends \yii\db\ActiveRecord
 {
+    public $recordStatus = [
+        '1' => 'На подтверждении',
+        '2' => 'На согласовании',
+        '3' => 'Согласовано',
+        '4' => 'Отказано',
+    ];
     /**
      * {@inheritdoc}
      */
@@ -48,6 +55,15 @@ class BusinessTrip extends \yii\db\ActiveRecord
         ];
     }
 
+    public function behaviors()
+    {
+        return [
+            [
+                'class' => BlameableBehavior::className(),
+            ],
+        ];
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -55,19 +71,19 @@ class BusinessTrip extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'full_name' => 'Full Name',
-            'user_post' => 'User Post',
-            'company' => 'Company',
-            'begin_date' => 'Begin Date',
-            'end_date' => 'End Date',
-            'date_count' => 'Date Count',
-            'user_object' => 'User Object',
-            'user_project' => 'User Project',
-            'user_direction' => 'User Direction',
-            'trip_target' => 'Trip Target',
-            'user_amount' => 'User Amount',
-            'user_total' => 'User Total',
-            'status' => 'Status',
+            'full_name' => 'ФИО',
+            'user_post' => 'Должность',
+            'company' => 'Компания',
+            'begin_date' => 'Дата начала',
+            'end_date' => 'Дата окончания',
+            'date_count' => 'Количество дней',
+            'user_object' => 'Объект',
+            'user_project' => 'Проект',
+            'user_direction' => 'Направление',
+            'trip_target' => 'Цель поездки',
+            'user_amount' => 'Сумма',
+            'user_total' => 'Итого',
+            'status' => 'Статус',
             'created_at' => 'Created At',
             'updated_at' => 'Updated At',
             'created_by' => 'Created By',

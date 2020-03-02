@@ -26,7 +26,7 @@ class m200229_091133_create_business_trip_table extends Migration
             'trip_target' => $this->string(),
             'user_amount' => $this->integer(),
             'user_total' => $this->integer(),
-            'status' => $this->integer(),
+            'status' => $this->integer()->defaultValue(1),
             'created_at' => $this->dateTime(),
             'updated_at' => $this->dateTime(),
             'created_by' => $this->integer(),
